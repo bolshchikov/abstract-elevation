@@ -12,4 +12,4 @@ class StorageService {
   }
 }
 
-module.exports = StorageService;
+export default StorageService;

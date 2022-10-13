@@ -1,4 +1,5 @@
-const express = require('express');
+import express from 'express';
+
 const router = express.Router();
 
 router.get('/', async function (req, res, next) {
@@ -14,4 +15,4 @@ router.put('/', async function (req, res, next) {
   res.send(`Invoice ${newInvoice.id} for ${newInvoice.amount} is added`);
 });
 
-module.exports = router;
+export default router;

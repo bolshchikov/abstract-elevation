@@ -1,27 +1,27 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const invoicesRouter = require('./routes/invoices');
+import indexRouter from './routes/index.js';
+import usersRouter from './routes/users.js';
+import invoicesRouter from './routes/invoices.js';
 
-const StorageService = require('./services/storage');
-const InvoicesService = require('./services/invoices');
+import StorageService from './services/storage.js';
+import InvoicesService from './services/invoices.js';
 
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(process.cwd(), 'src', 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.use((req, res, next) => {
   const ctx = {};
@@ -51,4 +51,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+export default app;

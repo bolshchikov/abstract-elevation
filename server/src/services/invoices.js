@@ -1,5 +1,5 @@
-const Invoice = require('../models/Invoice');
-const ids = require('../utils/ids');
+import Invoice from '../models/Invoice.js';
+import ids from '../utils/ids.js';
 
 class InvoicesService {
   constructor(ctx) {
@@ -17,4 +17,4 @@ class InvoicesService {
   }
 }
 
-module.exports = InvoicesService;
+export default InvoicesService;

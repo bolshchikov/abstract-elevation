@@ -1,5 +1,6 @@
 let lastId = 0;
-module.exports = {
+
+export default {
   generate() {
     lastId++;
     return lastId;

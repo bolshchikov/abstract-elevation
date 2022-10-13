@@ -6,4 +6,4 @@ class Invoice {
   }
 }
 
-module.exports = Invoice;
+export default Invoice;
