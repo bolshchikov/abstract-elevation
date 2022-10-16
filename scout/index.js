@@ -43,4 +43,4 @@ while (paths.length) {
   });
 };
 
-console.log(graph);
+console.log(JSON.stringify(Object.fromEntries(graph)));
