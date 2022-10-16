@@ -1,0 +1,22 @@
+{
+  "../guinea-pig/bin/www.js": [
+    "../guinea-pig/src/app.js"
+  ],
+  "../guinea-pig/src/app.js": [
+    "../guinea-pig/src/routes/index.js",
+    "../guinea-pig/src/routes/users.js",
+    "../guinea-pig/src/routes/invoices.js",
+    "../guinea-pig/src/services/storage.js",
+    "../guinea-pig/src/services/invoices.js"
+  ],
+  "../guinea-pig/src/routes/index.js": [],
+  "../guinea-pig/src/routes/users.js": [],
+  "../guinea-pig/src/routes/invoices.js": [],
+  "../guinea-pig/src/services/storage.js": [],
+  "../guinea-pig/src/services/invoices.js": [
+    "../guinea-pig/src/models/Invoice.js",
+    "../guinea-pig/src/utils/ids.js"
+  ],
+  "../guinea-pig/src/models/Invoice.js": [],
+  "../guinea-pig/src/utils/ids.js": []
+}
