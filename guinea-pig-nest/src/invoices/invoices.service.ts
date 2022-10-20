@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateInvoiceDto } from 'src/dto/create-invoice.dto';
+import { CreateInvoiceDto } from 'src/invoices/dto/create-invoice.dto';
 import { IdsService } from 'src/ids/ids.service';
-import { Invoice } from 'src/invoice';
+import { Invoice } from 'src/invoices/model/invoice';
 import { StorageService } from 'src/storage/storage.service';
 
 @Injectable()

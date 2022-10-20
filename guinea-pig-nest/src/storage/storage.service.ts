@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Invoice } from 'src/invoice';
+import { Invoice } from 'src/invoices/model/invoice';
 
 @Injectable()
 export class StorageService {
