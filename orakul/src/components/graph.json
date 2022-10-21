@@ -1,22 +1,45 @@
 {
-  "../guinea-pig/bin/www.js": [
-    "../guinea-pig/src/app.js"
+  "../guinea-pig-nest/src/main.ts": [
+    "../guinea-pig-nest/src/app.module.ts"
   ],
-  "../guinea-pig/src/app.js": [
-    "../guinea-pig/src/routes/index.js",
-    "../guinea-pig/src/routes/users.js",
-    "../guinea-pig/src/routes/invoices.js",
-    "../guinea-pig/src/services/storage.js",
-    "../guinea-pig/src/services/invoices.js"
+  "../guinea-pig-nest/src/app.module.ts": [
+    "../guinea-pig-nest/src/app.controller.ts",
+    "../guinea-pig-nest/src/app.service.ts",
+    "../guinea-pig-nest/src/invoices/invoices.controller.ts",
+    "../guinea-pig-nest/src/invoices/invoices.service.ts",
+    "../guinea-pig-nest/src/storage/storage.service.ts",
+    "../guinea-pig-nest/src/ids/ids.service.ts"
   ],
-  "../guinea-pig/src/routes/index.js": [],
-  "../guinea-pig/src/routes/users.js": [],
-  "../guinea-pig/src/routes/invoices.js": [],
-  "../guinea-pig/src/services/storage.js": [],
-  "../guinea-pig/src/services/invoices.js": [
-    "../guinea-pig/src/models/Invoice.js",
-    "../guinea-pig/src/utils/ids.js"
+  "../guinea-pig-nest/src/app.controller.ts": [
+    "../guinea-pig-nest/src/app.service.ts"
   ],
-  "../guinea-pig/src/models/Invoice.js": [],
-  "../guinea-pig/src/utils/ids.js": []
+  "../guinea-pig-nest/src/app.service.ts": [],
+  "../guinea-pig-nest/src/invoices/invoices.controller.ts": [
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/invoices/invoices.service.ts"
+  ],
+  "../guinea-pig-nest/src/invoices/invoices.service.ts": [
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/ids/ids.service.ts",
+    "../guinea-pig-nest/src/invoices/model/invoice.ts",
+    "../guinea-pig-nest/src/storage/storage.service.ts",
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/ids/ids.service.ts",
+    "../guinea-pig-nest/src/invoices/model/invoice.ts",
+    "../guinea-pig-nest/src/storage/storage.service.ts"
+  ],
+  "../guinea-pig-nest/src/storage/storage.service.ts": [
+    "../guinea-pig-nest/src/invoices/model/invoice.ts",
+    "../guinea-pig-nest/src/invoices/model/invoice.ts",
+    "../guinea-pig-nest/src/invoices/model/invoice.ts"
+  ],
+  "../guinea-pig-nest/src/ids/ids.service.ts": [],
+  "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts": [],
+  "../guinea-pig-nest/src/invoices/model/invoice.ts": [
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts",
+    "../guinea-pig-nest/src/invoices/dto/create-invoice.dto.ts"
+  ]
 }

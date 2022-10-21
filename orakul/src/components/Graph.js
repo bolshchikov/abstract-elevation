@@ -7,10 +7,32 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import raw from './graph.json';
 
+// remove root
+for (let key of Object.keys(raw)) {
+  if (key.endsWith('main.ts') || key.endsWith('module.ts')) {
+    delete raw[key];
+  }
+}
+
+const colorBorders = (fileName) => {
+  const parts = fileName.split('.');
+  switch (parts.at(-2)) {
+    case 'controller':
+      return 'red';
+    case 'service':
+      return 'green';
+    default:
+      return 'black';
+  }
+}
+
 const initNodes = Object.keys(raw).map((entry, idx) => ({
   id: String(idx),
   position: { x: idx * 100, y: idx * 100 },
   data: { label: entry },
+  style: {
+    borderColor: colorBorders(entry)
+  }
 }));
 
 const ids = initNodes.reduce((acc, curr) => {
