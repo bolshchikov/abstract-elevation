@@ -3,7 +3,7 @@ import { buildImportMap as buildImportMapJS } from './javascript-ast';
 import { buildImportMap as buildImportMapTS } from './typescript-ast';
 
 const root = process.argv[2];
-
+console.log(`Root received ${root}`);
 if (!root) {
   throw new Error('Path to project root file is not specified');
 }
@@ -14,7 +14,7 @@ if (path.extname(root) === '.js') {
 } else if (path.extname(root) === '.ts') {
   graph = buildImportMapTS(root);
 } else {
-  throw new Error('Unsupported file type. Only .js or .ts are supported');
+  throw new Error('Unsupported file type. Only .js or .ts are supported.');
 }
 
 console.log(JSON.stringify(Object.fromEntries(graph)));
