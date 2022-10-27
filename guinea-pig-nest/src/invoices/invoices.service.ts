@@ -8,7 +8,8 @@ import { StorageService } from '../storage/storage.service';
 export class InvoicesService {
   constructor(
     private storageService: StorageService,
-    private idsService: IdsService) { }
+    private idsService: IdsService,
+  ) {}
 
   async list(): Promise<Invoice[]> {
     return this.storageService.getInvoices();

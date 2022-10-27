@@ -4,7 +4,7 @@ import { InvoicesService } from './invoices.service';
 
 @Controller('invoices')
 export class InvoicesController {
-  constructor(private invoicesService: InvoicesService) { }
+  constructor(private invoicesService: InvoicesService) {}
 
   @Get()
   async getAllInvoices() {
