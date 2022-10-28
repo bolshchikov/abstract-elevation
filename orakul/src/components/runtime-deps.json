@@ -1,0 +1,239 @@
+[
+  {
+    "traceId": "4133d0edadaeec86f21dd63d822fffbb",
+    "name": "Create Nest App",
+    "id": "987f4223afbe10be",
+    "kind": 0,
+    "timestamp": 1666882870547873,
+    "duration": 441513,
+    "attributes": {
+      "component": "@nestjs/core",
+      "nestjs.type": "app_creation",
+      "nestjs.version": "9.1.4",
+      "nestjs.module": "AppModule"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "middleware - query",
+    "id": "53fcf3366e525bd6",
+    "kind": 0,
+    "timestamp": 1666882882828339,
+    "duration": 365,
+    "attributes": {
+      "http.route": "/",
+      "express.name": "query",
+      "express.type": "middleware"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "middleware - expressInit",
+    "id": "af752f254ba9cf15",
+    "kind": 0,
+    "timestamp": 1666882882829039,
+    "duration": 367,
+    "attributes": {
+      "http.route": "/",
+      "express.name": "expressInit",
+      "express.type": "middleware"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "middleware - jsonParser",
+    "id": "9912fafb6e569579",
+    "kind": 0,
+    "timestamp": 1666882882829536,
+    "duration": 825,
+    "attributes": {
+      "http.route": "/",
+      "express.name": "jsonParser",
+      "express.type": "middleware"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "middleware - urlencodedParser",
+    "id": "6bb8293905a6a400",
+    "kind": 0,
+    "timestamp": 1666882882830485,
+    "duration": 168,
+    "attributes": {
+      "http.route": "/",
+      "express.name": "urlencodedParser",
+      "express.type": "middleware"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "middleware - <anonymous>",
+    "id": "09b744cfa363db5e",
+    "kind": 0,
+    "timestamp": 1666882882830913,
+    "duration": 479,
+    "attributes": {
+      "http.route": "/",
+      "express.name": "<anonymous>",
+      "express.type": "middleware"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "request handler - /invoices",
+    "id": "a6278619bebe2d77",
+    "kind": 0,
+    "timestamp": 1666882882831638,
+    "duration": 26,
+    "attributes": {
+      "http.route": "/invoices",
+      "express.name": "/invoices",
+      "express.type": "request_handler"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "d4450cbaf5b981d1",
+    "name": "StorageService.getInvoices",
+    "id": "0895de5276778b16",
+    "kind": 0,
+    "timestamp": 1666882882833278,
+    "duration": 55,
+    "attributes": {},
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "404b5220c933140a",
+    "name": "InvoicesService.list",
+    "id": "d4450cbaf5b981d1",
+    "kind": 0,
+    "timestamp": 1666882882833145,
+    "duration": 850,
+    "attributes": {},
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "dc419f898c4c17dd",
+    "name": "getAllInvoices",
+    "id": "404b5220c933140a",
+    "kind": 0,
+    "timestamp": 1666882882832576,
+    "duration": 1597,
+    "attributes": {
+      "component": "@nestjs/core",
+      "nestjs.version": "9.1.4",
+      "nestjs.type": "handler",
+      "nestjs.callback": "getAllInvoices"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "name": "GET /invoices",
+    "id": "c82a3770ab3d19c2",
+    "kind": 1,
+    "timestamp": 1666882882826125,
+    "duration": 17204,
+    "attributes": {
+      "http.url": "http://localhost:3000/invoices",
+      "http.host": "localhost:3000",
+      "net.host.name": "localhost",
+      "http.method": "GET",
+      "http.target": "/invoices",
+      "http.user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+      "http.flavor": "1.1",
+      "net.transport": "ip_tcp",
+      "net.host.ip": "::1",
+      "net.host.port": 3000,
+      "net.peer.ip": "::1",
+      "net.peer.port": 55754,
+      "http.status_code": 304,
+      "http.status_text": "NOT MODIFIED",
+      "http.route": "/invoices"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  },
+  {
+    "traceId": "6d9a2a1d43c3b10a1e166460d6891f16",
+    "parentId": "c82a3770ab3d19c2",
+    "name": "InvoicesController.getAllInvoices",
+    "id": "dc419f898c4c17dd",
+    "kind": 0,
+    "timestamp": 1666882882831973,
+    "duration": 11409,
+    "attributes": {
+      "component": "@nestjs/core",
+      "nestjs.version": "9.1.4",
+      "nestjs.type": "request_context",
+      "http.method": "GET",
+      "http.url": "/invoices",
+      "http.route": "/invoices",
+      "nestjs.controller": "InvoicesController",
+      "nestjs.callback": "getAllInvoices"
+    },
+    "status": {
+      "code": 0
+    },
+    "events": [],
+    "links": []
+  }
+]

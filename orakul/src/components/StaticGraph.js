@@ -5,7 +5,7 @@ import ReactFlow, {
   applyEdgeChanges, applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import raw from './graph.json';
+import raw from './static-deps.json';
 
 // remove root
 for (let key of Object.keys(raw)) {
