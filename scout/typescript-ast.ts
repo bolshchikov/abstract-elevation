@@ -18,6 +18,16 @@ const removeQuotes = (name: string) => {
   return name.trim().split('').filter(isNotQuote).join('');
 };
 
+const hasDuplicate = (collection: any[], target: string) => {
+  if (!collection || collection.length === 0) {
+    return false;
+  }
+  if (typeof collection[0] === 'object') {
+    return collection.some(({ id }) => target === id);
+  }
+  return collection.includes(target);
+}
+
 export const buildImportMap = (root: string): Map<string, string[]> => {
   const paths = [root];
   const graph = new Map();
@@ -44,9 +54,7 @@ export const buildImportMap = (root: string): Map<string, string[]> => {
         }
       }
     });
-
   }
-
   return graph;
 };
 
@@ -74,24 +82,30 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
     if (isLocalImport(newRawPath)) {
       const newPath = path.join(path.parse(currentPath).dir, newRawPath) + '.ts';
       paths.push(newPath);
-      graph.get(currentPath)?.imports.push(newPath);
+      if (!hasDuplicate(graph.get(currentPath)?.imports ?? [], newPath)) {
+        graph.get(currentPath)?.imports.push(newPath);
+      }
     }
   };
   const handleClassDeclaration = (currentPath: string, node: ts.ClassDeclaration, sourceFile: ts.SourceFile) => {
     if (!isExported(node)) {
       return;
     }
+    const classId = node.name?.getText(sourceFile);
     const className = node.name?.getText(sourceFile);
-    graph.get(currentPath)?.exports.push({
-      id: node.name?.getText(sourceFile),
-      name: className,
-      members: node.members
-        .filter(({ kind }) => SyntaxKind.MethodDeclaration === kind)
-        .map((member) => ({
-          id: `${className}.${member.name?.getText(sourceFile)}`,
-          name: member.name?.getText(sourceFile)
-        }))
-    });
+
+    if (classId && !hasDuplicate(graph.get(currentPath)?.exports ?? [], classId)) {
+      graph.get(currentPath)?.exports.push({
+        id: classId,
+        name: className,
+        members: node.members
+          .filter(({ kind }) => SyntaxKind.MethodDeclaration === kind)
+          .map((member) => ({
+            id: `${className}.${member.name?.getText(sourceFile)}`,
+            name: member.name?.getText(sourceFile)
+          }))
+      });
+    }
   };
 
   while (paths.length) {
