@@ -81,13 +81,14 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
     if (!isExported(node)) {
       return;
     }
+    const className = node.name?.getText(sourceFile);
     graph.get(currentPath)?.exports.push({
       id: node.name?.getText(sourceFile),
-      name: node.name?.getText(sourceFile),
+      name: className,
       members: node.members
         .filter(({ kind }) => SyntaxKind.MethodDeclaration === kind)
         .map((member) => ({
-          id: member.name?.getText(sourceFile),
+          id: `${className}.${member.name?.getText(sourceFile)}`,
           name: member.name?.getText(sourceFile)
         }))
     });
