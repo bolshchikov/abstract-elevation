@@ -54,7 +54,9 @@ const initEdges = Object.values(raw)
 
 const nodeTypes = { class: ClassNode };
 
-const Graph = () => {
+const Graph = ({activeScenario}) => {
+  console.log(activeScenario);
+  
   const [nodes, setNodes] = useState(initNodes);
   const [edges, setEdges] = useState(initEdges);
 
