@@ -28,12 +28,13 @@ const initNodes = Object.values(raw)
   .map(({ exports, id }, idx) => ({
     id: id,
     position: { x: idx * 100, y: idx * 100 },
-    // type: 'class',
-    data: {
-      label: exports[0].name,
-    },
+    type: 'class',
+    data: exports[0],
     style: {
-      background: paintClass(exports[0].name)
+      background: paintClass(exports[0].name),
+      border: '1px solid black',
+      borderRadius: '3px',
+      padding: '10px 15px',
     }
   }));
 
@@ -46,7 +47,6 @@ const initEdges = Object.values(raw)
       id: `${id}-${dep}`,
       source: id,
       target: dep,
-      type: 'step'
     }));
     acc.push(...edges);
     return acc;

@@ -1,14 +1,27 @@
-import { useCallback } from 'react';
 import { Handle, Position } from 'reactflow';
 
 
-function ClassNode({ data }) {
-  console.log(data);
-
+const ClassNode = ({ data }) => {
   return (
-    <div className="class-node">
-      hello world
-    </div>
+    <>
+      <Handle
+        type="target"
+        position="top"
+        onConnect={(params) => console.log('handle onConnect', params)}
+      />
+      <div>
+        {data.name}
+        {data.members.length > 0 && <ul>
+          {data.members.map(({ name, id }) => <li key={id}>{name}</li>)}
+        </ul>}
+      </div>
+      <Handle
+        type="source"
+        position="bottom"
+        onConnect={(params) => console.log('handle onConnect', params)}
+      />
+
+    </>
   );
 }
 
