@@ -5,50 +5,54 @@ import ReactFlow, {
   applyEdgeChanges, applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import ClassNode from './ClassNode';
 import raw from './static-deps.json';
 
-// remove root
-for (let key of Object.keys(raw)) {
-  if (key.endsWith('main.ts') || key.endsWith('module.ts')) {
-    delete raw[key];
-  }
-}
-
-const colorBorders = (fileName) => {
-  const parts = fileName.split('.');
-  switch (parts.at(-2)) {
+const paintClass = (fileName) => {
+  const parts = fileName.split(/(?=[A-Z])/);
+  const type = parts.at(-1) ? parts.at(-1).toLowerCase() : void 0
+  switch (type) {
     case 'controller':
-      return 'red';
+      return '#db3b3bbf';
+    case 'module':
+      return '#7676df';
     case 'service':
-      return 'green';
+      return '#0cff0cbd';
     default:
-      return 'black';
+      return 'white';
   }
 }
 
-const initNodes = Object.keys(raw).map((entry, idx) => ({
-  id: String(idx),
-  position: { x: idx * 100, y: idx * 100 },
-  data: { label: entry },
-  style: {
-    borderColor: colorBorders(entry)
-  }
-}));
-
-const ids = initNodes.reduce((acc, curr) => {
-  acc[curr.data.label] = curr.id;
-  return acc;
-}, {});
-
-const initEdges = Object.keys(raw).reduce((acc, entry) => {
-  const _edges = raw[entry].map(target => ({
-    id: `${ids[entry]}-${ids[target]}`,
-    source: ids[entry],
-    target: ids[target]
+const initNodes = Object.values(raw)
+  .filter(entry => entry.exports.length > 0)
+  .map(({ exports, id }, idx) => ({
+    id: id,
+    position: { x: idx * 100, y: idx * 100 },
+    // type: 'class',
+    data: {
+      label: exports[0].name,
+    },
+    style: {
+      background: paintClass(exports[0].name)
+    }
   }));
-  acc.push(..._edges);
-  return acc;
-}, []);
+
+
+const initEdges = Object.values(raw)
+  .filter(entry => entry.exports.length > 0)
+  .filter(entry => !entry.name.includes('module'))
+  .reduce((acc, { imports, id }) => {
+    const edges = imports.map(dep => ({
+      id: `${id}-${dep}`,
+      source: id,
+      target: dep,
+      type: 'step'
+    }));
+    acc.push(...edges);
+    return acc;
+  }, []);
+
+const nodeTypes = { class: ClassNode };
 
 const Graph = () => {
   const [nodes, setNodes] = useState(initNodes);
@@ -69,6 +73,7 @@ const Graph = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      nodeTypes={nodeTypes}
       fitView
       attributionPosition="top-right"
     >
