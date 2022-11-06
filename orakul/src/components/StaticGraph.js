@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
   Controls,
   Background,
@@ -6,7 +6,21 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ClassNode from './ClassNode';
-import raw from './static-deps.json';
+import staticRaw from './static-deps.json';
+import runtimeRaw from './runtime-deps.json';
+
+const EDGE_DEFAULT_STYLE = {
+  animated: false,
+  style: {
+    stroke: '#b1b1b7'
+  }
+};
+const EDGE_ANIMATED_STYLE = {
+  animated: true,
+  style: {
+    stroke: 'red'
+  }
+};
 
 const paintClass = (fileName) => {
   const parts = fileName.split(/(?=[A-Z])/);
@@ -23,7 +37,7 @@ const paintClass = (fileName) => {
   }
 }
 
-const initNodes = Object.values(raw)
+const initNodes = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)
   .map(({ exports, id }, idx) => ({
     id: id,
@@ -39,7 +53,7 @@ const initNodes = Object.values(raw)
   }));
 
 
-const initEdges = Object.values(raw)
+const initEdges = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)
   .filter(entry => !entry.name.includes('module'))
   .reduce((acc, { imports, id }) => {
@@ -52,13 +66,85 @@ const initEdges = Object.values(raw)
     return acc;
   }, []);
 
+const buildTrace = (scenarioName) => {
+  const getRoot = (scenarioName) => {
+    const attrName = 'http.url';
+    return runtimeRaw.find(trace => trace.attributes[attrName] === scenarioName);
+  };
+  const getNextChild = (id) => {
+    return runtimeRaw.find(({ parentId }) => parentId === id);
+  };
+  const root = getRoot(scenarioName);
+  if (!root) {
+    return null;
+  }
+  const res = [root];
+  let curr = root;
+  while (curr) {
+    const child = getNextChild(curr.id);
+    if (child) {
+      res.push(child);
+    }
+    curr = child;
+  }
+  return res;
+};
+
+const mapTraceToNodes = (traces, nodes) => {
+  const getNodeByName = (name) => {
+    return nodes.find(node => node.data.name === name);
+  };
+  const res = [];
+  for (let trace of traces) {
+    const [serviceName, methodName] = trace.name.split('.');
+    if (!methodName) {
+      continue;
+    }
+    const maybeNode = getNodeByName(serviceName);
+    if (maybeNode) {
+      res.push(maybeNode);
+    }
+  }
+  return res;
+};
+const findEdgesByNodes = (nodesInTraces, edges) => {
+  const res = {};
+  for (let i = 0; i < nodesInTraces.length - 1; i++) {
+    const nodeA = nodesInTraces[i];
+    const nodeB = nodesInTraces[i + 1];
+    const edgeId = `${nodeA.id}-${nodeB.id}`;
+    res[edgeId] = true;
+  }
+  return res;
+};
+
 const nodeTypes = { class: ClassNode };
 
-const Graph = ({activeScenario}) => {
-  console.log(activeScenario);
-  
+const Graph = ({ activeScenario }) => {
   const [nodes, setNodes] = useState(initNodes);
   const [edges, setEdges] = useState(initEdges);
+
+  useEffect(() => {
+    if (!activeScenario) {
+      return
+    }
+
+    const traces = buildTrace(activeScenario);
+    const nodesInTraces = mapTraceToNodes(traces, nodes);
+    const relevantEdges = findEdgesByNodes(nodesInTraces, edges);
+    console.log(relevantEdges);
+    console.log(edges);
+    const newEdges = edges.map(edge => {
+      if (relevantEdges[edge.id]) {
+        return { ...edge, ...EDGE_ANIMATED_STYLE };
+      } else {
+        return { ...edge, ...EDGE_DEFAULT_STYLE };
+      }
+    });
+    console.log(newEdges);
+    setEdges(newEdges);
+
+  }, [activeScenario]);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

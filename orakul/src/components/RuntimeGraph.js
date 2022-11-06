@@ -8,25 +8,10 @@ import 'reactflow/dist/style.css';
 import raw from './runtime-deps.json';
 
 
-const colorBorders = (fileName) => {
-  const parts = fileName.split('.');
-  switch (parts.at(-2)) {
-    case 'controller':
-      return 'red';
-    case 'service':
-      return 'green';
-    default:
-      return 'black';
-  }
-}
-
 const initNodes = raw.map((entry, idx) => ({
   id: entry.id,
   position: { x: idx * 100, y: idx * 100 },
   data: { label: entry.name },
-  // style: {
-  //   borderColor: colorBorders(entry)
-  // }
 }));
 
 
