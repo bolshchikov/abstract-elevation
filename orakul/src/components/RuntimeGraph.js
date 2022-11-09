@@ -5,7 +5,7 @@ import ReactFlow, {
   applyEdgeChanges, applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import raw from './runtime-deps.json';
+import raw from './runtime-deps';
 
 
 const initNodes = raw.map((entry, idx) => ({

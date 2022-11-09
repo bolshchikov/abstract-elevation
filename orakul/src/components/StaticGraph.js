@@ -7,7 +7,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import ClassNode from './ClassNode';
 import staticRaw from './static-deps.json';
-import runtimeRaw from './runtime-deps.json';
+import runtimeRaw from './runtime-deps';
 
 const EDGE_DEFAULT_STYLE = {
   animated: false,
