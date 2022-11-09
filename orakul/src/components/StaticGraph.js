@@ -78,7 +78,7 @@ const buildTrace = (scenarioName) => {
   const [verb, path] = scenarioName.split(' ');
   const root = getRoot(verb, path);
   if (!root) {
-    return null;
+    return [];
   }
   const res = [root];
   let curr = root;
