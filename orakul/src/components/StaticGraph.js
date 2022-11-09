@@ -72,8 +72,8 @@ const buildTrace = (scenarioName) => {
     const attrName2 = 'http.method';
     return runtimeRaw.find(trace => trace.attributes[attrName1] === path && trace.attributes[attrName2] === verb);
   };
-  const getNextChild = (id) => {
-    return runtimeRaw.find(({ parentId }) => parentId === id);
+  const getNextChildren = (id) => {
+    return runtimeRaw.filter(({ parentId }) => parentId === id);
   };
   const [verb, path] = scenarioName.split(' ');
   const root = getRoot(verb, path);
@@ -81,13 +81,12 @@ const buildTrace = (scenarioName) => {
     return [];
   }
   const res = [root];
-  let curr = root;
-  while (curr) {
-    const child = getNextChild(curr.id);
-    if (child) {
-      res.push(child);
-    }
-    curr = child;
+  const queue = [root];
+  while (queue.length > 0) {
+    const curr = queue.shift();
+    const children = getNextChildren(curr.id);
+    res.push(...children);
+    queue.push(...children)
   }
   return res;
 };
@@ -109,13 +108,15 @@ const mapTraceToNodes = (traces, nodes) => {
   }
   return res;
 };
-const findEdgesByNodes = (nodesInTraces, edges) => {
+const generatePossibleEdges = (nodesInTraces) => {
   const res = {};
-  for (let i = 0; i < nodesInTraces.length - 1; i++) {
-    const nodeA = nodesInTraces[i];
-    const nodeB = nodesInTraces[i + 1];
-    const edgeId = `${nodeA.id}-${nodeB.id}`;
-    res[edgeId] = true;
+  for (let i = 0; i < nodesInTraces.length; i++) {
+    for (let j = i; j < nodesInTraces.length; j++) {
+      const nodeA = nodesInTraces[i];
+      const nodeB = nodesInTraces[j];
+      res[`${nodeA.id}-${nodeB.id}`] = true;
+      res[`${nodeB.id}-${nodeA.id}`] = true;
+    }
   }
   return res;
 };
@@ -133,9 +134,7 @@ const Graph = ({ activeScenario }) => {
 
     const traces = buildTrace(activeScenario);
     const nodesInTraces = mapTraceToNodes(traces, nodes);
-    const relevantEdges = findEdgesByNodes(nodesInTraces, edges);
-    console.log(relevantEdges);
-    console.log(edges);
+    const relevantEdges = generatePossibleEdges(nodesInTraces, edges);
     const newEdges = edges.map(edge => {
       if (relevantEdges[edge.id]) {
         return { ...edge, ...EDGE_ANIMATED_STYLE };
@@ -143,7 +142,6 @@ const Graph = ({ activeScenario }) => {
         return { ...edge, ...EDGE_DEFAULT_STYLE };
       }
     });
-    console.log(newEdges);
     setEdges(newEdges);
 
   }, [activeScenario]);
