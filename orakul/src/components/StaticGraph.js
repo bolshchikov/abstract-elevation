@@ -67,14 +67,16 @@ const initEdges = Object.values(staticRaw)
   }, []);
 
 const buildTrace = (scenarioName) => {
-  const getRoot = (scenarioName) => {
-    const attrName = 'http.url';
-    return runtimeRaw.find(trace => trace.attributes[attrName] === scenarioName);
+  const getRoot = (verb, path) => {
+    const attrName1 = 'http.url';
+    const attrName2 = 'http.method';
+    return runtimeRaw.find(trace => trace.attributes[attrName1] === path && trace.attributes[attrName2] === verb);
   };
   const getNextChild = (id) => {
     return runtimeRaw.find(({ parentId }) => parentId === id);
   };
-  const root = getRoot(scenarioName);
+  const [verb, path] = scenarioName.split(' ');
+  const root = getRoot(verb, path);
   if (!root) {
     return null;
   }

@@ -4,8 +4,9 @@ import RuntimeGraph from './components/RuntimeGraph';
 import './App.css';
 
 const scenarios = [
-  '/invoices',
-  '/health-check'
+  'GET /invoices',
+  'PUT /invoices',
+  'GET /health-check'
 ]
 
 const App = () => {
