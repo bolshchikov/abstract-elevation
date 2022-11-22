@@ -2,8 +2,9 @@ import path from 'path';
 import { buildImportMap as buildImportMapJS } from './javascript-ast';
 import { buildDepsMap, buildImportMap as buildImportMapTS } from './typescript-ast';
 
-const root = process.argv[2];
+const root = process.argv[2].trim();
 console.log(`Root received ${root}`);
+
 if (!root) {
   throw new Error('Path to project root file is not specified');
 }

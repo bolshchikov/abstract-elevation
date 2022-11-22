@@ -109,8 +109,12 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
   };
 
   while (paths.length) {
-    const currentPath = paths.shift();
+    const currentPath = paths.pop();
     if (currentPath === undefined) {
+      continue;
+    }
+    // To avoid loops
+    if (graph.has(currentPath)) {
       continue;
     }
     if (!graph.has(currentPath)) {
