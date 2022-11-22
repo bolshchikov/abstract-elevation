@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
-  Controls,
-  Background,
-  applyEdgeChanges, applyNodeChanges
+  applyEdgeChanges, applyNodeChanges, Background, Controls
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import ClassNode from './ClassNode';
-import staticRaw from './static-deps.json';
+import ClassNode from './ClassNode/ClassNode';
+import './ClassNode/ClassNode.css';
 import runtimeRaw from './runtime-deps';
+import staticRaw from './static-deps.json';
 
 const EDGE_DEFAULT_STYLE = {
   animated: false,
@@ -29,29 +28,51 @@ const paintClass = (fileName) => {
     case 'controller':
       return '#db3b3bbf';
     case 'module':
-      return '#7676df';
+      return 'transparent';
     case 'service':
       return '#0cff0cbd';
     default:
       return 'white';
   }
-}
+};
+
+const isModule = (fileName) => fileName.endsWith('.module');
+
+const fileToModuleMap = Object.values(staticRaw)
+  .filter(({ name }) => isModule(name))
+  .reduce((acc, {imports, id}) => {
+    imports.forEach(dep => acc[dep] = id);
+    return acc;
+  }, {});
+
+console.log(fileToModuleMap);
 
 const initNodes = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)
-  .map(({ exports, id }, idx) => ({
-    id: id,
-    position: { x: idx * 100, y: idx * 100 },
-    type: 'class',
-    data: exports[0],
-    style: {
-      background: paintClass(exports[0].name),
-      border: '1px solid black',
-      borderRadius: '3px',
-      padding: '10px 15px',
+  .map(({ exports, id, name }, idx) => {
+    const node =  {
+      id: id,
+      position: { x: idx * 100, y: idx * 100 },
+      type: 'class',
+      data: exports[0],
+      className: 'ClassNode',
+      style: {
+        background: paintClass(exports[0].name),
+      }
     }
-  }));
+    if (isModule(name)) {
+      node.type = 'group';
+      node.className = 'ModuleNode';
+    }
+    return node;
+  });
 
+initNodes.forEach(node => {
+  if (fileToModuleMap[node.id]) {
+    node.parentNode = fileToModuleMap[node.id];
+    // node.extent = 'parent';
+  }
+});
 
 const initEdges = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)

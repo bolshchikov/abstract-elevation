@@ -1,0 +1,11 @@
+.ClassNode {
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 10px 15px;
+}
+
+.ModuleNode {
+  width: 500px;
+  height: 800px;
+  border-color: white;
+}
