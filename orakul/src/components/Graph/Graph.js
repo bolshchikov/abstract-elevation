@@ -3,10 +3,10 @@ import ReactFlow, {
   applyEdgeChanges, applyNodeChanges, Background, Controls
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import runtimeRaw from '../runtime-deps';
 import ClassNode from './ClassNode/ClassNode';
 import './ClassNode/ClassNode.css';
-import runtimeRaw from './runtime-deps';
-import staticRaw from './static-deps.json';
+import { initEdges, initNodes } from './initialElements';
 
 const EDGE_DEFAULT_STYLE = {
   animated: false,
@@ -21,71 +21,6 @@ const EDGE_ANIMATED_STYLE = {
   }
 };
 
-const paintClass = (fileName) => {
-  const parts = fileName.split(/(?=[A-Z])/);
-  const type = parts.at(-1) ? parts.at(-1).toLowerCase() : void 0
-  switch (type) {
-    case 'controller':
-      return '#db3b3bbf';
-    case 'module':
-      return 'transparent';
-    case 'service':
-      return '#0cff0cbd';
-    default:
-      return 'white';
-  }
-};
-
-const isModule = (fileName) => fileName.endsWith('.module');
-
-const fileToModuleMap = Object.values(staticRaw)
-  .filter(({ name }) => isModule(name))
-  .reduce((acc, {imports, id}) => {
-    imports.forEach(dep => acc[dep] = id);
-    return acc;
-  }, {});
-
-console.log(fileToModuleMap);
-
-const initNodes = Object.values(staticRaw)
-  .filter(entry => entry.exports.length > 0)
-  .map(({ exports, id, name }, idx) => {
-    const node =  {
-      id: id,
-      position: { x: idx * 100, y: idx * 100 },
-      type: 'class',
-      data: exports[0],
-      className: 'ClassNode',
-      style: {
-        background: paintClass(exports[0].name),
-      }
-    }
-    if (isModule(name)) {
-      node.type = 'group';
-      node.className = 'ModuleNode';
-    }
-    return node;
-  });
-
-initNodes.forEach(node => {
-  if (fileToModuleMap[node.id]) {
-    node.parentNode = fileToModuleMap[node.id];
-    // node.extent = 'parent';
-  }
-});
-
-const initEdges = Object.values(staticRaw)
-  .filter(entry => entry.exports.length > 0)
-  .filter(entry => !entry.name.includes('module'))
-  .reduce((acc, { imports, id }) => {
-    const edges = imports.map(dep => ({
-      id: `${id}-${dep}`,
-      source: id,
-      target: dep,
-    }));
-    acc.push(...edges);
-    return acc;
-  }, []);
 
 const buildTrace = (scenarioName) => {
   const getRoot = (verb, path) => {
@@ -129,6 +64,7 @@ const mapTraceToNodes = (traces, nodes) => {
   }
   return res;
 };
+
 const generatePossibleEdges = (nodesInTraces) => {
   const res = {};
   for (let i = 0; i < nodesInTraces.length; i++) {

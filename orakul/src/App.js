@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import StaticGraph from './components/Graph';
+import StaticGraph from './components/Graph/Graph';
 import RuntimeGraph from './components/RuntimeGraph';
 import './App.css';
 

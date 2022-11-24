@@ -1,4 +1,4 @@
-import { Handle, Position } from 'reactflow';
+import { Handle } from 'reactflow';
 
 
 const ClassNode = ({ data }) => {
