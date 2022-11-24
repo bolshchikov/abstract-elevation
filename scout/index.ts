@@ -1,6 +1,7 @@
 import path from 'path';
 import { buildImportMap as buildImportMapJS } from './javascript-ast';
-import { buildDepsMap, buildImportMap as buildImportMapTS } from './typescript-ast';
+import { buildDepsMap } from './typescript-ast';
+import writeJsonFile = require('write-json-file');
 
 const root = process.argv[2].trim();
 console.log(`Root received ${root}`);
@@ -18,4 +19,14 @@ if (path.extname(root) === '.js') {
   throw new Error('Unsupported file type. Only .js or .ts are supported.');
 }
 
-console.log(JSON.stringify(Object.fromEntries(<any>graph)));
+const fileName = `${__dirname}/results/static-graph-${Date.now()}.json`;
+writeJsonFile(
+  fileName,
+  Object.fromEntries(<any>graph),
+  { indent: 2 }
+).then(() => {
+  console.log(`File created: ${fileName}`);
+},
+  () => {
+    console.error('Failed to create file')
+  });
