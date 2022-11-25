@@ -28,44 +28,6 @@ const hasDuplicate = (collection: any[], target: string) => {
   return collection.includes(target);
 }
 
-export const buildImportMap = (root: string): Map<string, string[]> => {
-  const paths = [root];
-  const graph = new Map();
-
-  while (paths.length) {
-    const currentPath = paths.shift();
-    if (currentPath === undefined) {
-      continue;
-    }
-    if (!graph.has(currentPath)) {
-      graph.set(currentPath, []);
-    }
-
-    try {
-      const fileContent = readFile(currentPath);
-      const sourceFile = buildAst(currentPath, fileContent);
-
-      ts.forEachChild(sourceFile, node => {
-        if (ts.isImportDeclaration(node)) {
-          const newRawPath = removeQuotes(node.moduleSpecifier.getFullText(sourceFile));
-          if (isLocalImport(newRawPath)) {
-            const newPath = path.join(path.parse(currentPath).dir, newRawPath) + '.ts';
-            paths.push(newPath);
-            graph.get(currentPath).push(newPath);
-          }
-        }
-      });
-    } catch (error) {
-      console.log(`Error in file: ${currentPath}`);
-      console.log(error);
-      process.exit(1);
-    }
-
-
-  }
-  return graph;
-};
-
 const buildEmptyRecord = (id: string): TFile => ({
   id,
   name: path.basename(id, '.ts'),
@@ -81,6 +43,11 @@ const isExported = (node: ts.Node) => {
   return modifiers.some(({ kind }) => SyntaxKind.ExportKeyword === kind);
 };
 
+const hasAllowedFileExtension = (path: string) => {
+  const exts = ['.js', '.ts'];
+  return exts.some(ext => path.endsWith(ext));
+}
+
 export const buildDepsMap = (root: string): TStaticDepsMap => {
   const paths = [root];
   const graph: TStaticDepsMap = new Map();
@@ -88,7 +55,8 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
   const handleImportDeclaration = (currentPath: string, node: ts.ImportDeclaration, sourceFile: ts.SourceFile) => {
     const newRawPath = removeQuotes(node.moduleSpecifier.getFullText(sourceFile));
     if (isLocalImport(newRawPath)) {
-      const newPath = path.join(path.parse(currentPath).dir, newRawPath) + '.ts';
+      const ext = hasAllowedFileExtension(newRawPath) ? '' : '.ts';
+      const newPath = path.join(path.parse(currentPath).dir, newRawPath) + ext;
       paths.push(newPath);
       if (!hasDuplicate(graph.get(currentPath)?.imports ?? [], newPath)) {
         graph.get(currentPath)?.imports.push(newPath);
