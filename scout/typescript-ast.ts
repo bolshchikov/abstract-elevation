@@ -41,19 +41,27 @@ export const buildImportMap = (root: string): Map<string, string[]> => {
       graph.set(currentPath, []);
     }
 
-    const fileContent = readFile(currentPath);
-    const sourceFile = buildAst(currentPath, fileContent);
+    try {
+      const fileContent = readFile(currentPath);
+      const sourceFile = buildAst(currentPath, fileContent);
 
-    ts.forEachChild(sourceFile, node => {
-      if (ts.isImportDeclaration(node)) {
-        const newRawPath = removeQuotes(node.moduleSpecifier.getFullText(sourceFile));
-        if (isLocalImport(newRawPath)) {
-          const newPath = path.join(path.parse(currentPath).dir, newRawPath) + '.ts';
-          paths.push(newPath);
-          graph.get(currentPath).push(newPath);
+      ts.forEachChild(sourceFile, node => {
+        if (ts.isImportDeclaration(node)) {
+          const newRawPath = removeQuotes(node.moduleSpecifier.getFullText(sourceFile));
+          if (isLocalImport(newRawPath)) {
+            const newPath = path.join(path.parse(currentPath).dir, newRawPath) + '.ts';
+            paths.push(newPath);
+            graph.get(currentPath).push(newPath);
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      console.log(`Error in file: ${currentPath}`);
+      console.log(error);
+      process.exit(1);
+    }
+
+
   }
   return graph;
 };
@@ -121,19 +129,28 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
       graph.set(currentPath, buildEmptyRecord(currentPath));
     }
 
-    const fileContent = readFile(currentPath);
-    const sourceFile = buildAst(currentPath, fileContent);
+    try {
+      const fileContent = readFile(currentPath);
+      const sourceFile = buildAst(currentPath, fileContent);
 
-    ts.forEachChild(sourceFile, node => {
-      switch (node.kind) {
-        case SyntaxKind.ImportDeclaration:
-          handleImportDeclaration(currentPath, <ts.ImportDeclaration>node, sourceFile);
-          break;
-        case SyntaxKind.ClassDeclaration:
-          handleClassDeclaration(currentPath, <ts.ClassDeclaration>node, sourceFile);
-          break;
-      }
-    });
+      ts.forEachChild(sourceFile, node => {
+        switch (node.kind) {
+          case SyntaxKind.ImportDeclaration:
+            handleImportDeclaration(currentPath, <ts.ImportDeclaration>node, sourceFile);
+            break;
+          case SyntaxKind.ClassDeclaration:
+            handleClassDeclaration(currentPath, <ts.ClassDeclaration>node, sourceFile);
+            break;
+        }
+      });
+    } catch (error) {
+      console.error(`Error in file: ${currentPath}`);
+      console.log(`Current graph: `, graph);
+      console.error(error);
+      process.exit(1);
+    }
+
+
   }
   return graph;
 }
