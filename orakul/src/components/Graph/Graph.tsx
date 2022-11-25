@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
-  applyEdgeChanges, applyNodeChanges, Background, Controls
+  applyEdgeChanges, applyNodeChanges, Background, Controls, Node
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import runtimeRaw from '../runtime-deps';
@@ -40,18 +40,20 @@ const buildTrace = (scenarioName) => {
   const queue = [root];
   while (queue.length > 0) {
     const curr = queue.shift();
-    const children = getNextChildren(curr.id);
-    res.push(...children);
-    queue.push(...children)
+    if (curr) {
+      const children = getNextChildren(curr.id);
+      res.push(...children);
+      queue.push(...children)
+    }
   }
   return res;
 };
 
-const mapTraceToNodes = (traces, nodes) => {
+const mapTraceToNodes = (traces, nodes): Node[] => {
   const getNodeByName = (name) => {
     return nodes.find(node => node.data.name === name);
   };
-  const res = [];
+  const res: Node[] = [];
   for (let trace of traces) {
     const [serviceName, methodName] = trace.name.split('.');
     if (!methodName) {
@@ -91,7 +93,7 @@ const Graph = ({ activeScenario }) => {
 
     const traces = buildTrace(activeScenario);
     const nodesInTraces = mapTraceToNodes(traces, nodes);
-    const relevantEdges = generatePossibleEdges(nodesInTraces, edges);
+    const relevantEdges = generatePossibleEdges(nodesInTraces);
     const newEdges = edges.map(edge => {
       if (relevantEdges[edge.id]) {
         return { ...edge, ...EDGE_ANIMATED_STYLE };

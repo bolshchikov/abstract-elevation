@@ -1,4 +1,5 @@
-import { Handle } from 'reactflow';
+import React from 'react';
+import { Handle, Position } from 'reactflow';
 
 
 const ClassNode = ({ data }) => {
@@ -6,7 +7,7 @@ const ClassNode = ({ data }) => {
     <>
       <Handle
         type="target"
-        position="top"
+        position={Position.Top}
         onConnect={(params) => console.log('handle onConnect', params)}
       />
       <div>
@@ -17,7 +18,7 @@ const ClassNode = ({ data }) => {
       </div>
       <Handle
         type="source"
-        position="bottom"
+        position={Position.Bottom}
         onConnect={(params) => console.log('handle onConnect', params)}
       />
 

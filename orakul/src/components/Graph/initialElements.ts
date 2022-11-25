@@ -1,3 +1,4 @@
+import { Edge, Node } from 'reactflow';
 import staticRaw from '../static-deps.json';
 
 const paintClass = (fileName) => {
@@ -17,10 +18,10 @@ const paintClass = (fileName) => {
 
 const isModule = (fileName) => fileName.endsWith('.module');
 
-export const initNodes = Object.values(staticRaw)
+export const initNodes: Node[] = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)
   .filter(({ name }) => !isModule(name))
-  .map(({ exports, id, name }, idx) => {
+  .map(({ exports, id, name }) => {
     const node = {
       id: id,
       position: { x: 0, y: 0 },
@@ -46,7 +47,7 @@ export const initNodes = Object.values(staticRaw)
 //   }
 // });
 
-export const initEdges = Object.values(staticRaw)
+export const initEdges: Edge[] = Object.values(staticRaw)
   .filter(entry => entry.exports.length > 0)
   .filter(entry => !entry.name.includes('module'))
   .reduce((acc, { imports, id }) => {
@@ -57,4 +58,4 @@ export const initEdges = Object.values(staticRaw)
     }));
     acc.push(...edges);
     return acc;
-  }, []);
+  }, [] as Edge[]);

@@ -19,7 +19,7 @@ const initEdges = raw
   .filter(entry => entry.parentId)
   .map(entry => ({
     id: `${entry.parentId}-${entry.id}`,
-    source: entry.parentId,
+    source: entry.parentId as string,
     target: entry.id
   }));
 
