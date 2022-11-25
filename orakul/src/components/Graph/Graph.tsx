@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
-  applyEdgeChanges, applyNodeChanges, Background, Controls, Node
+  ReactFlowProvider,
+  applyEdgeChanges, applyNodeChanges, Background, Controls, Node, useReactFlow, MiniMap
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import runtimeRaw from '../runtime-deps';
 import ClassNode from './ClassNode/ClassNode';
 import './ClassNode/ClassNode.css';
 import { initEdges, initNodes } from './initialElements';
+import useAutoLayout, { Direction } from './useAutoLayout';
 
 const EDGE_DEFAULT_STYLE = {
   animated: false,
@@ -19,6 +21,10 @@ const EDGE_ANIMATED_STYLE = {
   style: {
     stroke: 'red'
   }
+};
+
+const proOptions = {
+  hideAttribution: true,
 };
 
 
@@ -82,7 +88,10 @@ const generatePossibleEdges = (nodesInTraces) => {
 
 const nodeTypes = { class: ClassNode };
 
-const Graph = ({ activeScenario }) => {
+const Graph = ({ activeScenario, direction = 'TB' }: { activeScenario?: string, direction?: Direction }) => {
+
+  useAutoLayout({ direction });
+
   const [nodes, setNodes] = useState(initNodes);
   const [edges, setEdges] = useState(initEdges);
 
@@ -118,15 +127,23 @@ const Graph = ({ activeScenario }) => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      proOptions={proOptions}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
       fitView
-      attributionPosition="top-right"
     >
+      <MiniMap />
       <Controls />
       <Background />
     </ReactFlow>
   )
 };
-export default Graph;
+const GraphWrapper = (props) => {
+  return (
+    <ReactFlowProvider>
+      <Graph {...props} />
+    </ReactFlowProvider>
+  );
+};
+export default GraphWrapper;

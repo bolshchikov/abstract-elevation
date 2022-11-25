@@ -24,7 +24,7 @@ export const initNodes: Node[] = Object.values(staticRaw)
   .map(({ exports, id, name }) => {
     const node = {
       id: id,
-      position: { x: 0, y: 0 },
+      position: { x: -100, y: -100 },
       type: 'class',
       data: exports[0],
       selectable: true,

@@ -62,7 +62,6 @@ function useAutoLayout(options: Options) {
           sourcePosition: positionMap[direction[1]],
           targetPosition: positionMap[direction[0]],
           position: { x, y },
-          style: { opacity: 1 },
         };
       })
     );

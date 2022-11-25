@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import StaticGraph from './components/Graph/Graph';
+import Graph from './components/Graph/Graph';
 import './App.css';
 
 const scenarios = [
@@ -10,7 +10,7 @@ const scenarios = [
 
 
 function App() {
-  const [activeScenario, setActiveScenario] = useState(null);
+  const [activeScenario, setActiveScenario] = useState(undefined);
   const scenarioClickHandler = ({ target }) => {
     setActiveScenario(target.value);
   };
@@ -32,7 +32,7 @@ function App() {
         ))}
       </aside>
       <main className="Main">
-        <StaticGraph activeScenario={activeScenario} />
+        <Graph activeScenario={activeScenario} />
       </main>
     </div>
   );

@@ -11,7 +11,7 @@ const ClassNode = ({ data }) => {
         onConnect={(params) => console.log('handle onConnect', params)}
       />
       <div>
-        {data.name}
+        <b>{data.name}</b>
         {data.members.length > 0 && <ul>
           {data.members.map(({ name, id }) => <li key={id}>{name}</li>)}
         </ul>}
