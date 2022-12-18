@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
-  ReactFlowProvider,
-  applyEdgeChanges, applyNodeChanges, Background, Controls, Node, useReactFlow, MiniMap
+  applyEdgeChanges, applyNodeChanges, Background, Controls, MiniMap, Node, ReactFlowProvider
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import runtimeRaw from '../runtime-deps';
@@ -131,7 +130,6 @@ const Graph = ({ activeScenario, direction = 'TB' }: { activeScenario?: string, 
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
-      fitView
     >
       <MiniMap />
       <Controls />

@@ -1,14 +1,10 @@
 .App {
   display: flex;
   background-color: #000000db;
-  padding: 15px;
-  gap: 5px;
   height: 100vh;
-  
 }
 
 .Menu {
-  /* flex:0 1 auto; */
   flex-grow: 0;
   border-right: 1px solid #a04343;
   padding: 0 15px;

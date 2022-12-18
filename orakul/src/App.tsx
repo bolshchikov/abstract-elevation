@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
-import Graph from './components/Graph/Graph';
+import { useState } from 'react';
 import './App.css';
-
-const scenarios = [
-  'GET /invoices',
-  'PUT /invoices',
-  'GET /health-check'
-];
-
+import Graph from './components/Graph/Graph';
+import Scenarios from './components/Scenarios';
 
 function App() {
   const [activeScenario, setActiveScenario] = useState(undefined);
@@ -17,19 +11,7 @@ function App() {
   return (
     <div className="App">
       <aside className="Menu">
-        <h4>Scenarios</h4>
-        {scenarios.map(scenario => (
-          <div key={scenario} className="scenarioSelector">
-            <input
-              name="scenario-selector"
-              id={scenario}
-              type="radio"
-              value={scenario}
-              onClick={scenarioClickHandler}
-            />
-            <label htmlFor={scenario}>{scenario}</label>
-          </div>
-        ))}
+        <Scenarios onChange={scenarioClickHandler} />
       </aside>
       <main className="Main">
         <Graph activeScenario={activeScenario} />
