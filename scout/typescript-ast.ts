@@ -15,7 +15,13 @@ const buildAst = (fileName: string, fileContent: string) => ts.createSourceFile(
 
 const removeQuotes = (name: string) => {
   const isNotQuote = (char: string) => char !== '"' && char !== "'";
-  return name.trim().split('').filter(isNotQuote).join('');
+  const isNotBreakLine = (char: string) => char !== '\n';
+  return name
+    .trim()
+    .split('')
+    .filter(isNotQuote)
+    .filter(isNotBreakLine)
+    .join('');
 };
 
 const hasDuplicate = (collection: any[], target: string) => {
@@ -43,12 +49,60 @@ const isExported = (node: ts.Node) => {
   return modifiers.some(({ kind }) => SyntaxKind.ExportKeyword === kind);
 };
 
+// const isController = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile) => {
+//   return ts.getDecorators(node)?.some(
+//     dec => dec.getFullText(sourceFile).startsWith('@Controller')
+//   );
+// };
+
+/**
+ * 
+ * Example: @Controller('invoices'), @Put()
+ */
+const tokenizeDecorator = (decorator: string): [verb: string, path: string] | null => {
+  const decoratorRegEx = /@(.*)\((.*)\)/g;
+  const groups = decoratorRegEx.exec(decorator);
+  if (groups) {
+    return [groups[1], removeQuotes(groups[2])];
+  }
+  return null;
+};
+
+const getControllerPath = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile): string | null => {
+  const isControllerDecorator = (dec: ts.Decorator) => removeQuotes(dec.getFullText(sourceFile)).startsWith('@Controller');
+  const ctrlDecorator = ts.getDecorators(node)?.find(isControllerDecorator);
+  if (!ctrlDecorator) {
+    return null;
+  }
+  const text = ctrlDecorator.getFullText(sourceFile);
+  const tokens = tokenizeDecorator(text);
+  if (!tokens) {
+    return null;
+  }
+  const [, path] = tokens;
+  return path ? `/${path}` : '/';
+};
+
+const getControllerHandler = (node: ts.ClassElement, sourceFile: ts.SourceFile) => {
+  const knownVerbs = ['Put', 'Get', 'Post', 'Delete', 'Patch'].map(v => `@${v}`);
+  const isRESTDecorator = (dec: ts.Decorator) => {
+    const text = removeQuotes(dec.getFullText(sourceFile));
+    return knownVerbs.some(v => text.startsWith(v));
+  };
+  const restDecorator = ts.getDecorators(node as any)?.find(isRESTDecorator);
+  if (!restDecorator) {
+    return null;
+  }
+  const text = restDecorator.getFullText(sourceFile);
+  return tokenizeDecorator(text);
+};
+
 const hasAllowedFileExtension = (path: string) => {
   const exts = ['.js', '.ts'];
   return exts.some(ext => path.endsWith(ext));
-}
+};
 
-export const buildDepsMap = (root: string): TStaticDepsMap => {
+export const buildStaticInsights = (root: string): TStaticDepsMap => {
   const paths = [root];
   const graph: TStaticDepsMap = new Map();
 
@@ -74,12 +128,18 @@ export const buildDepsMap = (root: string): TStaticDepsMap => {
       graph.get(currentPath)?.exports.push({
         id: classId,
         name: className,
+        apiPath: getControllerPath(node, sourceFile) ?? '',
         members: node.members
           .filter(({ kind }) => SyntaxKind.MethodDeclaration === kind)
-          .map((member) => ({
-            id: `${className}.${member.name?.getText(sourceFile)}`,
-            name: member.name?.getText(sourceFile)
-          }))
+          .map((member) => {
+            const api = getControllerHandler(member, sourceFile);
+            return {
+              id: `${className}.${member.name?.getText(sourceFile)}`,
+              name: member.name?.getText(sourceFile),
+              method: api ? api[0].toUpperCase() : '',
+              apiPath: api ? api[1]: ''
+            }
+          })
       });
     }
   };

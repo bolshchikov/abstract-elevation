@@ -4,11 +4,14 @@ export type TFile = {
   name: string;
   imports: TFileIdentifier[];
   exports: {
-    id?: string;
+    id: string;
     name?: string;
+    apiPath?: string;
     members?: {
-      id?: string;
+      id: string;
       name?: string
+      method?: string
+      apiPath?: string;
     }[]
   }[]
 };

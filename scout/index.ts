@@ -1,6 +1,6 @@
 import path from 'path';
 import { buildImportMap as buildImportMapJS } from './javascript-ast';
-import { buildDepsMap } from './typescript-ast';
+import { buildStaticInsights } from './typescript-ast';
 import writeJsonFile = require('write-json-file');
 
 const root = process.argv[2].trim();
@@ -14,7 +14,7 @@ let graph;
 if (path.extname(root) === '.js') {
   graph = buildImportMapJS(root);
 } else if (path.extname(root) === '.ts') {
-  graph = buildDepsMap(root);
+  graph = buildStaticInsights(root);
 } else {
   throw new Error('Unsupported file type. Only .js or .ts are supported.');
 }
