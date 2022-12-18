@@ -49,12 +49,6 @@ const isExported = (node: ts.Node) => {
   return modifiers.some(({ kind }) => SyntaxKind.ExportKeyword === kind);
 };
 
-// const isController = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile) => {
-//   return ts.getDecorators(node)?.some(
-//     dec => dec.getFullText(sourceFile).startsWith('@Controller')
-//   );
-// };
-
 /**
  * 
  * Example: @Controller('invoices'), @Put()
@@ -137,7 +131,7 @@ export const buildStaticInsights = (root: string): TStaticDepsMap => {
               id: `${className}.${member.name?.getText(sourceFile)}`,
               name: member.name?.getText(sourceFile),
               method: api ? api[0].toUpperCase() : '',
-              apiPath: api ? api[1]: ''
+              apiPath: api ? getControllerPath(node, sourceFile) as string + api[1] : getControllerPath(node, sourceFile) as string
             }
           })
       });
