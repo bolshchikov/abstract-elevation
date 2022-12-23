@@ -1,11 +1,29 @@
 .App {
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1.25fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 5px;
+  grid-row-gap: 0px;
+}
+
+.Menu {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.Main {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.Code {
+  grid-area: 1 / 3 / 2 / 4;
+}
+
+.App {
   background-color: #000000db;
   height: 100vh;
 }
 
 .Menu {
-  flex-grow: 0;
   border-right: 1px solid #a04343;
   padding: 0 15px;
   color: white;
@@ -16,12 +34,7 @@
   text-align: center;
 }
 
-.Main {
-  /* flex:1 1 auto; */
-  flex-grow: 1;
-}
-
 .scenarioSelector {
   margin: 10px 0;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
