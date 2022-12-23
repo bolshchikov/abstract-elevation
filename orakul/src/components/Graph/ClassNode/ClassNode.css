@@ -1,11 +1,21 @@
 .ClassNode {
-  border: 1px solid;
+  border: 3px solid transparent;
   border-radius: 3px;
   padding: 10px 15px;
+}
+.ClassNode.selected {
+  border: 3px solid rgb(62, 197, 255);
 }
 
 .ModuleNode {
   width: 500px;
   height: 800px;
   border-color: white;
+}
+
+.react-flow__handle-top {
+  top: var(--nodeHandlerPosition);
+}
+.react-flow__handle-bottom {
+  bottom: var(--nodeHandlerPosition);
 }

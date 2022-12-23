@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import ReactFlow, {
-  applyEdgeChanges, applyNodeChanges, Background, Controls, MiniMap, Node, ReactFlowProvider
-} from 'reactflow';
+import { useEffect } from 'react';
+import ReactFlow, { Background, Controls, MiniMap, Node, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 import runtimeRaw from '../runtime-deps';
 import ClassNode from './ClassNode/ClassNode';
@@ -25,7 +23,6 @@ const EDGE_ANIMATED_STYLE = {
 const proOptions = {
   hideAttribution: true,
 };
-
 
 const buildTrace = (scenarioName) => {
   const getRoot = (verb, path) => {
@@ -87,12 +84,19 @@ const generatePossibleEdges = (nodesInTraces) => {
 
 const nodeTypes = { class: ClassNode };
 
-const Graph = ({ activeScenario, direction = 'TB' }: { activeScenario?: string, direction?: Direction }) => {
+interface GraphProps {
+  activeScenario?: string;
+  direction?: Direction;
+  onNodeSelect: Function;
+}
+
+const Graph = ({ activeScenario, direction = 'TB', onNodeSelect }: GraphProps) => {
 
   useAutoLayout({ direction });
 
-  const [nodes, setNodes] = useState(initNodes);
-  const [edges, setEdges] = useState(initEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+
 
   useEffect(() => {
     if (!activeScenario) {
@@ -111,16 +115,8 @@ const Graph = ({ activeScenario, direction = 'TB' }: { activeScenario?: string, 
     });
     setEdges(newEdges);
 
-  }, [activeScenario]);
+  }, [activeScenario, nodes, edges, setEdges]);
 
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
-  );
 
   return (
     <ReactFlow
@@ -130,13 +126,15 @@ const Graph = ({ activeScenario, direction = 'TB' }: { activeScenario?: string, 
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
+      onNodeDragStart={(_, node) => onNodeSelect(node)}
     >
       <MiniMap />
       <Controls />
       <Background />
-    </ReactFlow>
+    </ReactFlow >
   )
 };
+
 const GraphWrapper = (props) => {
   return (
     <ReactFlowProvider>
@@ -144,4 +142,5 @@ const GraphWrapper = (props) => {
     </ReactFlowProvider>
   );
 };
+
 export default GraphWrapper;
