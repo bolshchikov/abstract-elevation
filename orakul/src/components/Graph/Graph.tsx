@@ -122,6 +122,8 @@ const Graph = ({ activeScenario, direction = 'TB', onNodeSelect }: GraphProps) =
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      minZoom={0.2}
+      maxZoom={1}
       proOptions={proOptions}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
