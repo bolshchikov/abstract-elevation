@@ -63,12 +63,16 @@ const tokenizeDecorator = (decorator: string): [verb: string, path: string] | nu
 };
 
 const getControllerPath = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile): string | null => {
-  const isControllerDecorator = (dec: ts.Decorator) => removeQuotes(dec.getFullText(sourceFile)).startsWith('@Controller');
-  const ctrlDecorator = ts.getDecorators(node)?.find(isControllerDecorator);
+  const isControllerOrResolver = (dec: ts.Decorator) => {
+    const cleanText = removeQuotes(dec.getFullText(sourceFile));
+    return cleanText.startsWith('@Controller') || cleanText.startsWith('@Resolver');
+  };
+  const ctrlDecorator = ts.getDecorators(node)?.find(isControllerOrResolver);
   if (!ctrlDecorator) {
     return null;
   }
   const text = ctrlDecorator.getFullText(sourceFile);
+
   const tokens = tokenizeDecorator(text);
   if (!tokens) {
     return null;
@@ -78,7 +82,7 @@ const getControllerPath = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile)
 };
 
 const getControllerHandler = (node: ts.ClassElement, sourceFile: ts.SourceFile) => {
-  const knownVerbs = ['Put', 'Get', 'Post', 'Delete', 'Patch'].map(v => `@${v}`);
+  const knownVerbs = ['Put', 'Get', 'Post', 'Delete', 'Patch', 'Query', 'Mutation'].map(v => `@${v}`);
   const isRESTDecorator = (dec: ts.Decorator) => {
     const text = removeQuotes(dec.getFullText(sourceFile));
     return knownVerbs.some(v => text.startsWith(v));

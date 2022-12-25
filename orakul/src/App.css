@@ -27,14 +27,22 @@
   border-right: 1px solid #a04343;
   padding: 0 15px;
   color: white;
-  margin-top: 1.5rem;
+  overflow: auto;
+  font-size: 14px;
 }
 
 .Menu h4 {
   text-align: center;
 }
 
+.Menu h5 {
+  color: grey;
+  margin-bottom: 8px;
+}
+
 .scenarioSelector {
+  display: flex;
+  white-space: nowrap;
   margin: 10px 0;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
