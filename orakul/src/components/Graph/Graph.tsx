@@ -1,90 +1,20 @@
-import { useEffect } from 'react';
-import ReactFlow, { Background, Controls, MiniMap, Node, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
+import ReactFlow, { Background, Controls, MiniMap, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
-import runtimeRaw from '../runtime-deps';
+
 import ClassNode from './ClassNode/ClassNode';
 import './ClassNode/ClassNode.css';
 import { initEdges, initNodes } from './initialElements';
+import useAnimatedEdges from './useAnimatedEdges';
 import useAutoLayout, { Direction } from './useAutoLayout';
-
-const EDGE_DEFAULT_STYLE = {
-  animated: false,
-  style: {
-    stroke: '#b1b1b7'
-  }
-};
-const EDGE_ANIMATED_STYLE = {
-  animated: true,
-  style: {
-    stroke: 'red'
-  }
-};
 
 const proOptions = {
   hideAttribution: true,
 };
 
-const buildTrace = (scenarioName) => {
-  const getRoot = (verb, path) => {
-    const attrName1 = 'http.url';
-    const attrName2 = 'http.method';
-    return runtimeRaw.find(trace => trace.attributes[attrName1] === path && trace.attributes[attrName2] === verb);
-  };
-  const getNextChildren = (id) => {
-    return runtimeRaw.filter(({ parentId }) => parentId === id);
-  };
-  const [verb, path] = scenarioName.split(' ');
-  const root = getRoot(verb, path);
-  if (!root) {
-    return [];
-  }
-  const res = [root];
-  const queue = [root];
-  while (queue.length > 0) {
-    const curr = queue.shift();
-    if (curr) {
-      const children = getNextChildren(curr.id);
-      res.push(...children);
-      queue.push(...children)
-    }
-  }
-  return res;
-};
-
-const mapTraceToNodes = (traces, nodes): Node[] => {
-  const getNodeByName = (name) => {
-    return nodes.find(node => node.data.name === name);
-  };
-  const res: Node[] = [];
-  for (let trace of traces) {
-    const [serviceName, methodName] = trace.name.split('.');
-    if (!methodName) {
-      continue;
-    }
-    const maybeNode = getNodeByName(serviceName);
-    if (maybeNode) {
-      res.push(maybeNode);
-    }
-  }
-  return res;
-};
-
-const generatePossibleEdges = (nodesInTraces) => {
-  const res = {};
-  for (let i = 0; i < nodesInTraces.length; i++) {
-    for (let j = i; j < nodesInTraces.length; j++) {
-      const nodeA = nodesInTraces[i];
-      const nodeB = nodesInTraces[j];
-      res[`${nodeA.id}-${nodeB.id}`] = true;
-      res[`${nodeB.id}-${nodeA.id}`] = true;
-    }
-  }
-  return res;
-};
-
 const nodeTypes = { class: ClassNode };
 
 interface GraphProps {
+  query?: string;
   activeScenario?: string;
   direction?: Direction;
   onNodeSelect: Function;
@@ -97,26 +27,7 @@ const Graph = ({ activeScenario, direction = 'TB', onNodeSelect }: GraphProps) =
   const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
-
-  useEffect(() => {
-    if (!activeScenario) {
-      return
-    }
-
-    const traces = buildTrace(activeScenario);
-    const nodesInTraces = mapTraceToNodes(traces, nodes);
-    const relevantEdges = generatePossibleEdges(nodesInTraces);
-    const newEdges = edges.map(edge => {
-      if (relevantEdges[edge.id]) {
-        return { ...edge, ...EDGE_ANIMATED_STYLE };
-      } else {
-        return { ...edge, ...EDGE_DEFAULT_STYLE };
-      }
-    });
-    setEdges(newEdges);
-
-  }, [activeScenario, nodes, edges, setEdges]);
-
+  useAnimatedEdges(activeScenario);
 
   return (
     <ReactFlow
@@ -130,8 +41,8 @@ const Graph = ({ activeScenario, direction = 'TB', onNodeSelect }: GraphProps) =
       nodeTypes={nodeTypes}
       onNodeDragStart={(_, node) => onNodeSelect(node)}
     >
-      <MiniMap />
-      <Controls />
+      <MiniMap pannable />
+      <Controls showZoom />
       <Background />
     </ReactFlow >
   )
