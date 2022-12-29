@@ -38,7 +38,7 @@ export const buildActualNode = ({ data, id }) => {
 export const buildPlannedNode = ({ data }) => {
   const newNode = {
     id: String(Math.random()),
-    position: { x: 500, y: 100 },
+    position: { x: 800, y: 50 },
     type: SceneNodeType.PLANNED,
     data: data,
     selectable: true,

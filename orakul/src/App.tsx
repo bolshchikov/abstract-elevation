@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import './App.css';
 import Editor, { defaultComment, plannedNodeCode } from './components/Editor';
-import Scene from './components/Scene';
+import Scene from './components/Scene/Scene';
 import Scenarios from './components/Scenarios';
 import { getSourceCode } from './services/api';
 import { SceneNodeType } from './components/Scene/Node';
