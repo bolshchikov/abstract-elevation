@@ -4,7 +4,7 @@ interface EditorProps {
   sourceCode: string;
 }
 
-const defaultComment = `
+export const defaultComment = `
 /**
  * 
  * Hello, stranger!!
@@ -28,6 +28,10 @@ const defaultComment = `
  * 
  */
 `;
+
+export const plannedNodeCode = `
+  // TODO I'm a new service
+`
 
 const Editor = ({ sourceCode = defaultComment }: EditorProps) => {
   return (

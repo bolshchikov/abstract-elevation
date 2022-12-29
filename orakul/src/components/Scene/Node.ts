@@ -25,6 +25,7 @@ export const buildActualNode = ({ data, id }) => {
     type: SceneNodeType.ACTUAL,
     data,
     selectable: true,
+    deletable: false,
     className: 'ActualNode',
     style: {
       background: paintClass(data?.name),
@@ -41,6 +42,7 @@ export const buildPlannedNode = ({ data }) => {
     type: SceneNodeType.PLANNED,
     data: data,
     selectable: true,
+    deletable: true,
     className: 'PlannedNode',
     style: {}
   };

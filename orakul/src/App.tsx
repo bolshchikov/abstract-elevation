@@ -1,24 +1,46 @@
 import { useState } from 'react';
 import './App.css';
-import Editor from './components/Editor';
+import Editor, { defaultComment, plannedNodeCode } from './components/Editor';
 import Scene from './components/Scene';
 import Scenarios from './components/Scenarios';
 import { getSourceCode } from './services/api';
 import { SceneNodeType } from './components/Scene/Node';
+import { Node } from 'reactflow';
 
 function App() {
   const [activeScenario, setActiveScenario] = useState(undefined);
   const [sourceCode, setSourceCode] = useState('');
   const scenarioClickHandler = ({ target }) => setActiveScenario(target.value);
 
-  const onNodeSelectHandler = async node => {
-    if (node.type === SceneNodeType.ACTUAL) {
+  const fetchSourceCodeForNode = async (node) => {
+    try {
       const res = await getSourceCode(node.id);
       if (res) {
         setSourceCode(res);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onNodeSelect = (node: Node) => {
+    switch (node.type) {
+      case SceneNodeType.ACTUAL:
+        return fetchSourceCodeForNode(node);
+      case SceneNodeType.PLANNED:
+        return setSourceCode(plannedNodeCode);
+    }
+  };
+
+  const onNodeDeselect = () => {
+    return setSourceCode(defaultComment);
+  };
+
+  const onNodeSelectHandler = async (node: Node | undefined) => {
+    if (node) {
+      onNodeSelect(node);
     } else {
-      setSourceCode('');
+      onNodeDeselect();
     }
   };
 
