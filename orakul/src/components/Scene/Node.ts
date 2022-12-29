@@ -1,0 +1,48 @@
+export enum SceneNodeType {
+  PLANNED = 'planned',
+  ACTUAL = 'actual'
+};
+
+const paintClass = (fileName) => {
+  const parts = fileName.split(/(?=[A-Z])/);
+  const type = parts.at(-1) ? parts.at(-1).toLowerCase() : void 0
+  switch (type) {
+    case 'controller':
+      return '#3b5bdbbf';
+    case 'module':
+      return 'transparent';
+    case 'service':
+      return '#3cd93cbd';
+    default:
+      return 'white';
+  }
+};
+
+export const buildActualNode = ({ data, id }) => {
+  const newNode = {
+    id: id,
+    position: { x: -100, y: -100 },
+    type: SceneNodeType.ACTUAL,
+    data,
+    selectable: true,
+    className: 'ActualNode',
+    style: {
+      background: paintClass(data?.name),
+    }
+  };
+  return newNode;
+};
+
+
+export const buildPlannedNode = ({ data }) => {
+  const newNode = {
+    id: String(Math.random()),
+    position: { x: 500, y: 100 },
+    type: SceneNodeType.PLANNED,
+    data: data,
+    selectable: true,
+    className: 'PlannedNode',
+    style: {}
+  };
+  return newNode;
+};

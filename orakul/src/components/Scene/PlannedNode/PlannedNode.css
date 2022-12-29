@@ -1,0 +1,16 @@
+.PlannedNode {
+  border: 2px dotted black;
+  border-radius: 3px;
+  padding: 10px 15px;
+  background-color: #db2424e6;
+}
+.PlannedNode.selected {
+  border: 2px solid rgb(62, 197, 255);
+}
+
+.PlannedNode .react-flow__handle-top {
+  top: -5px;
+}
+.PlannedNode .react-flow__handle-bottom {
+  bottom: -5px;
+}

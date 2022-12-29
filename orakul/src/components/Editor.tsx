@@ -8,7 +8,7 @@ const defaultComment = `
 /**
  * 
  * Hello, stranger!!
- * Welcome to Scope.io
+ * Welcome to Essence.io
  * 
  * I'm your navigator around the architecture
  * You can see the existing API surface and main building blocks.

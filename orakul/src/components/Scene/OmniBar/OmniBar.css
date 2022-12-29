@@ -28,15 +28,20 @@
 }
 
 .OmniBarControls {
-  margin: 0 5px;
+  padding: 0 5px;
+  height: 100%;
+  border-left: 1px solid grey;
+  display: flex;
+  align-items: center;
 }
 
 .OmniBarControl {
   background: transparent;
   outline: none;
   border: none;
-  margin: 0 15px;
+  margin: 0 8px;
   padding: 0;
+  line-height: 9px;
 }
 .OmniBarControl:hover {
   cursor: pointer;
