@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.css';
 import Editor, { defaultComment, plannedNodeCode } from './components/Editor';
 import Scene from './components/Scene';
@@ -23,26 +23,26 @@ function App() {
     }
   }
 
-  const onNodeSelect = (node: Node) => {
+  const onNodeSelect = useCallback((node: Node) => {
     switch (node.type) {
       case SceneNodeType.ACTUAL:
         return fetchSourceCodeForNode(node);
       case SceneNodeType.PLANNED:
         return setSourceCode(plannedNodeCode);
     }
-  };
+  }, []);
 
   const onNodeDeselect = () => {
     return setSourceCode(defaultComment);
   };
 
-  const onNodeSelectHandler = async (node: Node | undefined) => {
+  const onNodeSelectHandler = useCallback((node: Node | undefined) => {
     if (node) {
       onNodeSelect(node);
     } else {
       onNodeDeselect();
     }
-  };
+  }, [onNodeSelect]);
 
   return (
     <div className="App">
