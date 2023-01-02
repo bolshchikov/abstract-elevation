@@ -1,4 +1,4 @@
-import staticRaw from './static-deps.json';
+import staticRaw from '../../fixtures/static-deps.json';
 
 const isController = (file) => file.name.endsWith('.controller');
 const isResolver = (file) => file.name.endsWith('.resolver');

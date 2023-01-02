@@ -1,5 +1,5 @@
 import { Edge, Node } from 'reactflow';
-import staticRaw from '../static-deps.json';
+import staticRaw from '../../fixtures/static-deps.json';
 import { buildActualNode } from './Node';
 
 const isModule = (fileName) => fileName.endsWith('.module');

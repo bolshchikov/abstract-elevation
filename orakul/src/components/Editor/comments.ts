@@ -1,9 +1,3 @@
-import MonacoEditor from '@monaco-editor/react';
-
-interface EditorProps {
-  sourceCode: string;
-}
-
 export const defaultComment = `
 /**
  * 
@@ -31,21 +25,4 @@ export const defaultComment = `
 
 export const plannedNodeCode = `
   // TODO I'm a new service
-`
-
-const Editor = ({ sourceCode = defaultComment }: EditorProps) => {
-  return (
-    <MonacoEditor
-      height="100vh"
-      defaultLanguage="typescript"
-      theme="vs-dark"
-      defaultValue={defaultComment}
-      value={sourceCode}
-      options={{
-        minimap: { enabled: false },
-      }}
-    />
-  );
-};
-
-export default Editor;
+`;

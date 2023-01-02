@@ -1,12 +1,13 @@
 import { useCallback, useRef, useState } from 'react';
 import { Node } from 'reactflow';
 import './App.css';
-import Editor, { defaultComment, plannedNodeCode } from './components/Editor';
-import Scenarios from './components/Scenarios';
-import { SceneNodeType } from './components/Scene/Node';
-import Scene from './components/Scene/Scene';
-import useSplitPanel from './hooks/useSplitPanel';
-import { getSourceCode } from './services/api';
+import Editor from '../Editor/Editor';
+import Scenarios from '../Scenarios/Scenarios';
+import { SceneNodeType } from '../Scene/Node';
+import Scene from '../Scene/Scene';
+import useSplitPanel from './useSplitPanel';
+import { getSourceCode } from '../../services/api';
+import { defaultComment, plannedNodeCode } from '../Editor/comments';
 
 function App() {
   const paneContainer = useRef(null);

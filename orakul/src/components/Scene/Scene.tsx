@@ -6,6 +6,7 @@ import { initEdges, initNodes } from './initialElements';
 import { buildPlannedNode } from './Node';
 import OmniBar from './OmniBar/OmniBar';
 import PlannedNode from './PlannedNode/PlannedNode';
+import './Scene.css';
 import useAnimatedEdges from './useAnimatedEdges';
 import useAutoLayout, { Direction } from './useAutoLayout';
 

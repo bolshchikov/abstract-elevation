@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Edge, Node, useReactFlow } from 'reactflow';
-import runtimeRaw from '../runtime-deps';
+import runtimeRaw from '../../fixtures/runtime-deps';
 
 const EDGE_DEFAULT_STYLE = {
   animated: false,
