@@ -16,7 +16,7 @@ const Scenarios = ({ onChange }) => {
             {members.map(member => {
               const scenario = `${member.method} ${isResolver({ name }) ? member.name : member.apiPath}`;
               return (
-                <div key={scenario} className="scenarioSelector">
+                <div key={scenario} className="ScenarioSelector">
                   <input
                     name="scenario-selector"
                     id={scenario}

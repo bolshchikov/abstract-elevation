@@ -1,13 +1,24 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { Node } from 'reactflow';
 import './App.css';
 import Editor, { defaultComment, plannedNodeCode } from './components/Editor';
-import Scene from './components/Scene/Scene';
 import Scenarios from './components/Scenarios';
-import { getSourceCode } from './services/api';
 import { SceneNodeType } from './components/Scene/Node';
-import { Node } from 'reactflow';
+import Scene from './components/Scene/Scene';
+import useSplitPanel from './hooks/useSplitPanel';
+import { getSourceCode } from './services/api';
 
 function App() {
+  const paneContainer = useRef(null);
+  const paneLeft = useRef(null);
+  const paneRight = useRef(null);
+
+  const {
+    onResizeEnd,
+    onResizeStart,
+    onResizing
+  } = useSplitPanel(paneContainer, paneLeft, paneRight);
+
   const [activeScenario, setActiveScenario] = useState(undefined);
   const [sourceCode, setSourceCode] = useState('');
   const scenarioClickHandler = ({ target }) => setActiveScenario(target.value);
@@ -45,17 +56,19 @@ function App() {
   }, [onNodeSelect]);
 
   return (
-    <div className="App">
-      <aside className="Menu">
+    <div className="App" ref={paneContainer} onMouseMove={onResizing} onMouseUp={onResizeEnd}>
+      <aside className="Menu" ref={paneLeft}>
         <Scenarios onChange={scenarioClickHandler} />
       </aside>
+      <div className="Splitter" data-index={0} onMouseDown={onResizeStart}></div>
       <main className="Main">
         <Scene
           activeScenario={activeScenario}
           onNodeSelect={onNodeSelectHandler}
         />
       </main>
-      <aside className="Code">
+      <div className="Splitter" data-index={1} onMouseDown={onResizeStart}></div>
+      <aside className="Code" ref={paneRight}>
         <Editor sourceCode={sourceCode} />
       </aside>
     </div>

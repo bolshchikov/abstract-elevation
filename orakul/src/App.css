@@ -1,21 +1,9 @@
 .App {
   display: grid;
-  grid-template-columns: 0.5fr 2fr 1.25fr;
+  grid-template-columns: 0.2fr 2px 1.2fr 2px 0.7fr;
   grid-template-rows: 1fr;
-  grid-column-gap: 5px;
+  grid-column-gap: 0px;
   grid-row-gap: 0px;
-}
-
-.Menu {
-  grid-area: 1 / 1 / 2 / 2;
-}
-
-.Main {
-  grid-area: 1 / 2 / 2 / 3;
-}
-
-.Code {
-  grid-area: 1 / 3 / 2 / 4;
 }
 
 .App {
@@ -23,12 +11,23 @@
   height: 100vh;
 }
 
+.Splitter {
+  cursor: col-resize;
+  background-color: #a04343;
+  position: relative;
+  z-index: 99;
+}
+
+.Splitter.draggable {
+  border: 3px solid #a04343;
+}
+
 .Menu {
-  border-right: 1px solid #a04343;
   padding: 0 15px;
   color: white;
   overflow: auto;
   font-size: 14px;
+  min-width: 150px;
 }
 
 .Menu h4 {
@@ -40,11 +39,19 @@
   margin-bottom: 8px;
 }
 
-.scenarioSelector {
+.ScenarioSelector {
   display: flex;
   white-space: nowrap;
   margin: 10px 0;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.Main {
+  position: relative;
+}
+
+.Code {
+  min-width: 150px;
 }
 
 .react-flow__minimap {
