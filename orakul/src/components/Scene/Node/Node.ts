@@ -14,7 +14,7 @@ const paintClass = (fileName) => {
     case 'service':
       return '#3cd93cbd';
     default:
-      return 'white';
+      return '#939393';
   }
 };
 

@@ -3,7 +3,7 @@ import { Node } from 'reactflow';
 import './App.css';
 import Editor from '../Editor/Editor';
 import Scenarios from '../Scenarios/Scenarios';
-import { SceneNodeType } from '../Scene/Node';
+import { SceneNodeType } from '../Scene/Node/Node';
 import Scene from '../Scene/Scene';
 import useSplitPanel from './useSplitPanel';
 import { getSourceCode } from '../../services/api';

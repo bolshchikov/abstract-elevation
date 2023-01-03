@@ -1,0 +1,3 @@
+.react-flow__edge.selected path{
+  stroke: rgb(62, 197, 255) !important;
+}

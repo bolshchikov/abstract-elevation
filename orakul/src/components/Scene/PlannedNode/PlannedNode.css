@@ -2,7 +2,7 @@
   border: 2px dotted black;
   border-radius: 3px;
   padding: 10px 15px;
-  background-color: #db2424e6;
+  background-color: white;
 }
 .PlannedNode.selected {
   border: 2px solid rgb(62, 197, 255);

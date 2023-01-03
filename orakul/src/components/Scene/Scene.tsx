@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, Node, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ActualNode from './ActualNode/ActualNode';
+import { buildEdge } from './Edge/Edge';
 import { initEdges, initNodes } from './initialElements';
-import { buildPlannedNode } from './Node';
+import { buildPlannedNode } from './Node/Node';
 import OmniBar from './OmniBar/OmniBar';
 import PlannedNode from './PlannedNode/PlannedNode';
 import './Scene.css';
@@ -33,7 +34,7 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
   const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
 
-  useAnimatedEdges(activeScenario);
+  useAnimatedEdges(activeScenario);  
 
   const onNodeAddHandler = useCallback(() => {
     const name = window.prompt('Enter name');
@@ -46,11 +47,7 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
   }, [nodes, setNodes]);
 
   const onEdgeAddHandler = useCallback(({ source, target }) => {
-    setEdges([...edges, {
-      id: `${source}-${target}`,
-      source,
-      target
-    }]);
+    setEdges([...edges, buildEdge(source, target)]);
   }, [edges, setEdges]);
 
   const onSelectionChangeHandler = useCallback(({ nodes }) => {
@@ -65,6 +62,15 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
       onNodeSelect(node);
     }
   }, [onNodeSelect, selectedNode]);
+
+  useEffect(() => {
+    if (!selectedNode) {
+      setEdges((edges) => edges.map(edge => ({ ...edge, selected: false })));
+    } else {
+      setEdges(edges => edges.map(edge => ({ ...edge, selected: edge.source === selectedNode.id || edge.target === selectedNode.id })))
+    }
+
+  }, [selectedNode, setEdges, edges]);
 
   return (
     <>
