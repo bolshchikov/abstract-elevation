@@ -64,14 +64,14 @@ const tokenizeDecorator = (decorator: string): [verb: string, path: string] | nu
 
 const getControllerPath = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile): string | null => {
   const isControllerOrResolver = (dec: ts.Decorator) => {
-    const cleanText = removeQuotes(dec.getFullText(sourceFile));
+    const cleanText = removeQuotes(dec.getText(sourceFile));
     return cleanText.startsWith('@Controller') || cleanText.startsWith('@Resolver');
   };
   const ctrlDecorator = ts.getDecorators(node)?.find(isControllerOrResolver);
   if (!ctrlDecorator) {
     return null;
   }
-  const text = ctrlDecorator.getFullText(sourceFile);
+  const text = ctrlDecorator.getText(sourceFile);
 
   const tokens = tokenizeDecorator(text);
   if (!tokens) {
@@ -83,16 +83,21 @@ const getControllerPath = (node: ts.ClassDeclaration, sourceFile: ts.SourceFile)
 
 const getControllerHandler = (node: ts.ClassElement, sourceFile: ts.SourceFile) => {
   const knownVerbs = ['Put', 'Get', 'Post', 'Delete', 'Patch', 'Query', 'Mutation'].map(v => `@${v}`);
-  const isRESTDecorator = (dec: ts.Decorator) => {
-    const text = removeQuotes(dec.getFullText(sourceFile));
+  const isAPIHandlerDecorator = (dec: ts.Decorator) => {
+    const text = removeQuotes(dec.getText(sourceFile));
     return knownVerbs.some(v => text.startsWith(v));
   };
-  const restDecorator = ts.getDecorators(node as any)?.find(isRESTDecorator);
-  if (!restDecorator) {
+  const apiDecorator = ts.getDecorators(node as any)?.find(isAPIHandlerDecorator);
+  if (!apiDecorator) {
     return null;
   }
-  const text = restDecorator.getFullText(sourceFile);
-  return tokenizeDecorator(text);
+  const text = apiDecorator.getText(sourceFile);
+  const tokens = tokenizeDecorator(text);
+  if (!tokens) {
+    return null;
+  }
+  const [verb, path] = tokens;
+  return [verb, path.startsWith('/') ? path : `/${path}`];
 };
 
 const hasAllowedFileExtension = (path: string) => {
