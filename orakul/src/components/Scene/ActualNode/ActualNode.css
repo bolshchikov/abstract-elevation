@@ -1,10 +1,10 @@
 .ActualNode {
-  border: 3px solid transparent;
-  border-radius: 3px;
+  border: 5px solid transparent;
+  border-radius: 5px;
   padding: 10px 15px;
 }
 .ActualNode.selected {
-  border: 3px solid rgb(62, 197, 255);
+  border: 5px solid rgb(62, 197, 255);
 }
 
 .ModuleNode {
