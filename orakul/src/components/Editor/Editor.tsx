@@ -1,5 +1,5 @@
 import MonacoEditor from '@monaco-editor/react';
-import { defaultComment } from './comments';
+import { defaultComment } from './codeTemplates';
 
 interface EditorProps {
   sourceCode: string;

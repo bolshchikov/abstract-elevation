@@ -7,7 +7,7 @@ import { SceneNodeType } from '../Scene/Node/Node';
 import Scene from '../Scene/Scene';
 import useSplitPanel from './useSplitPanel';
 import { getSourceCode } from '../../services/api';
-import { defaultComment, plannedNodeCode } from '../Editor/comments';
+import { defaultComment, generateNewClass } from '../Editor/codeTemplates';
 
 function App() {
   const paneContainer = useRef(null);
@@ -40,7 +40,7 @@ function App() {
       case SceneNodeType.ACTUAL:
         return fetchSourceCodeForNode(node);
       case SceneNodeType.PLANNED:
-        return setSourceCode(plannedNodeCode);
+        return setSourceCode(generateNewClass(node.data.name));
     }
   }, []);
 

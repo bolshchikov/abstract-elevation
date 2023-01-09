@@ -23,6 +23,13 @@ export const defaultComment = `
  */
 `;
 
-export const plannedNodeCode = `
-  // TODO I'm a new service
-`;
+export const generateNewClass = (name: string) => {
+  const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+  return `
+  class ${capitalizedName} {
+    constructor() {
+      // I am your new service
+    }
+  }
+  `;
+}
