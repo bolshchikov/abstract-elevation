@@ -10,6 +10,7 @@ import PlannedNode from './PlannedNode/PlannedNode';
 import './Scene.css';
 import useAnimatedEdges from './useAnimatedEdges';
 import useAutoLayout, { Direction } from './useAutoLayout';
+import Views, { Levels } from './Views/Views';
 
 const proOptions = {
   hideAttribution: true,
@@ -29,7 +30,7 @@ interface SceneProps {
 const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) => {
 
   useAutoLayout({ direction });
-
+  const [viewLevel, setViewLevel] = useState<Levels>(Levels.CODE);
   const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
   const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
@@ -91,6 +92,7 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
         <Controls showZoom />
         <Background />
       </ReactFlow >
+      <Views current={viewLevel} onChange={setViewLevel} />
     </>
   )
 };
