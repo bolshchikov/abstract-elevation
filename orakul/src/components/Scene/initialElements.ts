@@ -1,22 +1,31 @@
 import { Edge, Node } from 'reactflow';
-import staticRaw from '../../fixtures/static-deps.json';
 import { buildEdge } from './Edge/Edge';
-import { buildActualNode } from './Node/Node';
+import { buildAbstractNode, buildActualNode } from './Node/Node';
 
 const isModule = (fileName) => fileName.endsWith('.module');
 const hasPublicMethods = (exports) => exports.length > 0;
 
-const sanitizedRawData = () =>
-  Object.values(staticRaw)
-    .filter(({ exports }) => hasPublicMethods(exports))
-    .filter(({ name }) => !isModule(name));
+const sanitizeComponents = (components): Array<any> => {
+  return Object.values(components)
+    .filter((component: any) => hasPublicMethods(component.exports))
+    .filter((component: any) => !isModule(component.name));
+}
 
-export const initNodes: Node[] = sanitizedRawData()
-  .map(({ exports, id }) => buildActualNode({ id, data: exports[0] }));
+export const initAbstractNodes = (data): Node[] => {
+  return Object.values(data).map((node: any) => buildAbstractNode(node.id, node.id));
+};
+export const initAbstractEdges = (): Edge[] => ([]);
 
-export const initEdges: Edge[] = sanitizedRawData()
-  .reduce((acc, { imports, id }) => {
-    const edges = imports.map(dep => buildEdge(id, dep));
-    acc.push(...edges);
-    return acc;
-  }, [] as Edge[]);
+export const initCodeNodes = (data): Node[] => {
+  return sanitizeComponents(data)
+    .map(({ exports, id }) => buildActualNode({ id, data: exports[0] ?? { label: id } }));
+}
+
+export const initCodeEdges = (data): Edge[] => {
+  return sanitizeComponents(data)
+    .reduce((acc, { imports, id }) => {
+      const edges = imports.map(dep => buildEdge(id, dep));
+      acc.push(...edges);
+      return acc;
+    }, [] as Edge[]);
+}

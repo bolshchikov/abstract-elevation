@@ -1,4 +1,5 @@
 export type TFileIdentifier = string;
+
 export type TFile = {
   id: TFileIdentifier;
   name: string;
@@ -15,4 +16,12 @@ export type TFile = {
     }[]
   }[]
 };
+
 export type TStaticDepsMap = Map<TFileIdentifier, TFile>;
+
+export type Config = {
+  id: string;
+  src: string,
+  include?: string[],
+  exclude?: string[],
+};

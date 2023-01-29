@@ -48,3 +48,11 @@ export const buildPlannedNode = ({ data }) => {
   };
   return newNode;
 };
+
+export const buildAbstractNode = (id, label) => {
+  return ({
+    id,
+    position: { x: -100, y: -100 },
+    data: { label },
+  });
+};

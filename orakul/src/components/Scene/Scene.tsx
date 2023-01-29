@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
-import ReactFlow, { Background, Controls, MiniMap, Node, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
+import { useCallback, useEffect } from 'react';
+import ReactFlow, { Background, Controls, MiniMap, ReactFlowProvider, useEdgesState, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ActualNode from './ActualNode/ActualNode';
 import { buildEdge } from './Edge/Edge';
-import { initEdges, initNodes } from './initialElements';
+import { initAbstractEdges, initAbstractNodes, initCodeEdges, initCodeNodes } from './initialElements';
 import { buildPlannedNode } from './Node/Node';
 import OmniBar from './OmniBar/OmniBar';
 import PlannedNode from './PlannedNode/PlannedNode';
 import './Scene.css';
 import useAnimatedEdges from './useAnimatedEdges';
-import useAutoLayout, { Direction } from './useAutoLayout';
+import useAutoLayout from './useAutoLayout';
 import Views, { Levels } from './Views/Views';
 
 const proOptions = {
@@ -21,21 +21,39 @@ const nodeTypes = {
   planned: PlannedNode,
 };
 
+const DEFAULT_DIRECTION = 'TB';
+
 interface SceneProps {
   activeScenario?: string;
-  direction?: Direction;
-  onNodeSelect: (node: Node | undefined) => void;
+  data: any;
+  onNodeEnter: Function;
+  onNodeSelect: Function;
+  onViewChange: Function;
+  view: Levels;
 }
 
-const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) => {
+const Scene = ({
+  activeScenario,
+  data,
+  onNodeEnter,
+  onNodeSelect,
+  onViewChange,
+  view,
+}: SceneProps) => {
+  useAutoLayout({ direction: DEFAULT_DIRECTION });
 
-  useAutoLayout({ direction });
-  const [viewLevel, setViewLevel] = useState<Levels>(Levels.CODE);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
-  const [selectedNode, setSelectedNode] = useState<Node | undefined>(undefined);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  useAnimatedEdges(activeScenario);  
+  useEffect(() => {
+    const initNodes = view === Levels.Components ? initCodeNodes(data) : initAbstractNodes(data);
+    const initEdges = view === Levels.Components ? initCodeEdges(data) : initAbstractEdges();
+    setNodes(initNodes);
+    setEdges(initEdges);
+  }, [view, setNodes, setEdges, data]);
+
+
+  useAnimatedEdges(activeScenario);
 
   const onNodeAddHandler = useCallback(() => {
     const name = window.prompt('Enter name');
@@ -51,27 +69,25 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
     setEdges([...edges, buildEdge(source, target)]);
   }, [edges, setEdges]);
 
+  const onDoubleClickHandler = useCallback((_, node) => {
+    onNodeEnter && onNodeEnter(node.id);
+  }, [onNodeEnter]);
+
+  const highlightEdges = useCallback(selectedNode => {
+    setEdges(edges => edges.map(
+      edge => ({ ...edge, selected: edge.source === selectedNode.id || edge.target === selectedNode.id })
+    ))
+  }, [setEdges]);
+
+  const removeHighlightEdges = useCallback(() => {
+    setEdges((edges) => edges.map(edge => ({ ...edge, selected: false })));
+  }, [setEdges]);
+
   const onSelectionChangeHandler = useCallback(({ nodes }) => {
-    if (nodes.length === 0) {
-      setSelectedNode(undefined);
-      onNodeSelect(undefined);
-      return;
-    }
-    const node = nodes[0]; // we support only 1 node selection;
-    if (node.id !== selectedNode?.id) {
-      setSelectedNode(node);
-      onNodeSelect(node);
-    }
-  }, [onNodeSelect, selectedNode]);
-
-  useEffect(() => {
-    if (!selectedNode) {
-      setEdges((edges) => edges.map(edge => ({ ...edge, selected: false })));
-    } else {
-      setEdges(edges => edges.map(edge => ({ ...edge, selected: edge.source === selectedNode.id || edge.target === selectedNode.id })))
-    }
-
-  }, [selectedNode, setEdges, edges]);
+    const selectedNode = nodes[0];
+    selectedNode ? highlightEdges(selectedNode) : removeHighlightEdges();
+    onNodeSelect && onNodeSelect(selectedNode);
+  }, [highlightEdges, removeHighlightEdges, onNodeSelect]);
 
   return (
     <>
@@ -87,12 +103,14 @@ const Scene = ({ activeScenario, direction = 'TB', onNodeSelect }: SceneProps) =
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onSelectionChange={onSelectionChangeHandler}
+        onNodeDoubleClick={onDoubleClickHandler}
+        fitView
       >
         <MiniMap pannable />
         <Controls showZoom />
         <Background />
       </ReactFlow >
-      <Views current={viewLevel} onChange={setViewLevel} />
+      <Views current={view} onChange={onViewChange} />
     </>
   )
 };

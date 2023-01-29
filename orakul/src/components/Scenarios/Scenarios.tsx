@@ -1,14 +1,20 @@
-import staticRaw from '../../fixtures/static-deps.json';
+import db from '../../fixtures/db.json';
 
 const isController = (file) => file.name.endsWith('.controller');
 const isResolver = (file) => file.name.endsWith('.resolver');
 
-const Scenarios = ({ onChange }) => {
-  let controllers = [
-    ...Object.values(staticRaw).filter(isController),
-    ...Object.values(staticRaw).filter(isResolver)
-  ];
-  controllers.sort((a, b) => a.name.localeCompare(b.name));
+const Scenarios = ({ serviceId, onChange }) => {
+  let controllers: any = [];
+  if (serviceId) {
+    const data = db.services[serviceId]?.components;
+    if (data) {
+      controllers = [
+        ...Object.values(data).filter(isController),
+        ...Object.values(data).filter(isResolver)
+      ]
+      controllers.sort((a, b) => a.name.localeCompare(b.name));
+    }
+  }
 
   return (
     <>
