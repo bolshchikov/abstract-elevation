@@ -21,7 +21,6 @@ const isEnabled = (currentIdx, renderIdx) => {
 
 const Views = ({ current, onChange }) => {
   const onCLickHandler = (ev) => {
-    console.log(ev.target.value);
     onChange(ev.target.value);
   };
   return (
